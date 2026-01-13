@@ -9,7 +9,68 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    // === 界面美化代码 (QSS) 开始 ===
+    // 1. 设置整体背景色 (淡雅的灰白)
+    this->setStyleSheet("QMainWindow { background-color: #f0f2f5; }");
 
+    // 2. 美化表格
+    ui->tableView->setStyleSheet(
+        "QTableView { "
+        "   background-color: white; "
+        "   alternate-background-color: #f9f9f9; " // 交替行颜色
+        "   selection-background-color: #3d8ec9; " // 选中颜色(蓝色)
+        "   border: 1px solid #dcdcdc; "
+        "   border-radius: 5px; "
+        "   padding: 5px; "
+        "   gridline-color: #eeeeee; "
+        "}"
+        "QHeaderView::section { " // 表头样式
+        "   background-color: #eaeff3; "
+        "   border: none; "
+        "   padding: 5px; "
+        "   font-weight: bold; "
+        "}"
+        );
+    ui->tableView->setAlternatingRowColors(true); // 开启隔行变色
+    ui->tableView->verticalHeader()->setVisible(false); // 隐藏左边那个丑丑的行号
+
+    // 3. 美化按钮 (通用样式)
+    QString btnStyle =
+        "QPushButton { "
+        "   background-color: white; "
+        "   border: 1px solid #dcdcdc; "
+        "   border-radius: 4px; "
+        "   padding: 6px 12px; "
+        "   font-size: 13px; "
+        "   color: #333; "
+        "}"
+        "QPushButton:hover { " // 鼠标悬停变色
+        "   background-color: #e6f7ff; "
+        "   border-color: #40a9ff; "
+        "   color: #40a9ff; "
+        "}"
+        "QPushButton:pressed { " // 按下变色
+        "   background-color: #bae7ff; "
+        "}";
+
+    // 给每个按钮应用样式
+    ui->btnAdd->setStyleSheet(btnStyle);
+    ui->btnDel->setStyleSheet(btnStyle);
+    ui->btnExport->setStyleSheet(btnStyle);
+    ui->btnChart->setStyleSheet(btnStyle);
+
+    // 给“删除”按钮单独搞个红色，显眼一点
+    ui->btnDel->setStyleSheet(
+        "QPushButton { "
+        "   background-color: #fff1f0; "
+        "   border: 1px solid #ffa39e; "
+        "   border-radius: 4px; "
+        "   padding: 6px 12px; "
+        "   color: #ff4d4f; "
+        "}"
+        "QPushButton:hover { background-color: #ff7875; color: white; }"
+        );
+    // === 界面美化代码 结束 ===
     // 1. 初始化数据库
     initDatabase();
 
@@ -191,4 +252,24 @@ void MainWindow::on_btnChart_clicked()
 
     // 6. 显示窗口
     dialog->exec();
+}
+
+void MainWindow::on_btnSearch_clicked()
+{
+    // 1. 获取输入框里的字
+    QString text = ui->txtSearch->text();
+
+    // 2. 如果是空的，就显示所有数据
+    if (text.isEmpty()) {
+        model->setFilter(""); // 清空过滤器
+    }
+    else {
+        // 3. 这里的语法是 SQL 语句： WHERE name LIKE '%关键词%'
+        // 意思是：查找名字里包含这个字的
+        QString filter = QString("name LIKE '%%1%'").arg(text);
+        model->setFilter(filter);
+    }
+
+    // 4. 刷新表格
+    model->select();
 }

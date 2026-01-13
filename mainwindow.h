@@ -32,6 +32,8 @@ private slots:
 
     void on_btnChart_clicked();
 
+    void on_btnSearch_clicked();
+
 private:
     Ui::MainWindow *ui;
 
