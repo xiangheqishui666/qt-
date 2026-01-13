@@ -30,6 +30,8 @@ private slots:
     void on_btnDel_clicked();
     void on_btnExport_clicked();
 
+    void on_btnChart_clicked();
+
 private:
     Ui::MainWindow *ui;
 

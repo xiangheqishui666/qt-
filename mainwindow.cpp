@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+// 引入图表相关的头文件
+#include <QLabel>
+#include <QProgressBar>
+#include <QVBoxLayout>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -139,4 +142,53 @@ void MainWindow::on_btnExport_clicked()
     // 5. 关闭文件并提示成功
     file.close();
     QMessageBox::information(this, "成功", "任务列表已成功导出到：" + fileName);
+}
+
+void MainWindow::on_btnChart_clicked()
+{
+    // 1. 统计数据
+    int total = model->rowCount();
+    int doing = 0;
+    int done = 0;
+
+    for (int i = 0; i < total; ++i) {
+        QString status = model->data(model->index(i, 3)).toString();
+        if (status == "已完成") {
+            done++;
+        } else {
+            doing++;
+        }
+    }
+
+    // 2. 创建一个新窗口 (QDialog)
+    QDialog *dialog = new QDialog(this);
+    dialog->setWindowTitle("任务进度分析");
+    dialog->resize(400, 300);
+
+    // 3. 创建布局
+    QVBoxLayout *layout = new QVBoxLayout(dialog);
+
+    // 4. 显示文字统计
+    QString text = QString("总任务数：%1\n\n进行中：%2\n已完成：%3")
+                       .arg(total).arg(doing).arg(done);
+    QLabel *label = new QLabel(text, dialog);
+    // 设置字体大一点，居中显示
+    QFont font;
+    font.setPointSize(14);
+    font.setBold(true);
+    label->setFont(font);
+    label->setAlignment(Qt::AlignCenter);
+    layout->addWidget(label);
+
+    // 5. 加一个漂亮的进度条
+    QProgressBar *bar = new QProgressBar(dialog);
+    bar->setRange(0, total); // 范围从 0 到 总数
+    bar->setValue(done);     // 当前进度是“已完成”的数量
+    bar->setFormat("完成率 %p%"); // 显示百分比
+    // 给进度条设置一点样式（绿色）
+    bar->setStyleSheet("QProgressBar::chunk { background-color: #4CAF50; } QProgressBar { text-align: center; }");
+    layout->addWidget(bar);
+
+    // 6. 显示窗口
+    dialog->exec();
 }

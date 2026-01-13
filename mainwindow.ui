@@ -14,12 +14,12 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>180</x>
       <y>200</y>
-      <width>297</width>
+      <width>397</width>
       <height>231</height>
      </rect>
     </property>
@@ -47,6 +47,13 @@
         <widget class="QPushButton" name="btnExport">
          <property name="text">
           <string>导出表格</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnChart">
+         <property name="text">
+          <string>任务统计</string>
          </property>
         </widget>
        </item>
